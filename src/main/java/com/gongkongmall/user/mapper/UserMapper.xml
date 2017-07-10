@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gongkongmall.user.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.gongkongmall.user.model.User">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="AGE" jdbcType="INTEGER" property="age" />
+    <result column="REGISTER_DATE" jdbcType="TIMESTAMP" property="registerDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, USER_NAME, AGE, REGISTER_DATE
+  </sql>
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from USER
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectTopN" parameterType="int" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from USER
+    order by id desc limit #{topNum}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from USER
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="com.gongkongmall.user.model.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER (USER_NAME, AGE, REGISTER_DATE
+      )
+    values (#{userName,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.gongkongmall.user.model.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        USER_NAME,
+      </if>
+      <if test="age != null">
+        AGE,
+      </if>
+      <if test="registerDate != null">
+        REGISTER_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByIdSelective" parameterType="com.gongkongmall.user.model.User">
+    update USER
+    <set>
+      <if test="userName != null">
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        AGE = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        REGISTER_DATE = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateById" parameterType="com.gongkongmall.user.model.User">
+    update USER
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      AGE = #{age,jdbcType=INTEGER},
+      REGISTER_DATE = #{registerDate,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
