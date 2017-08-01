@@ -1,14 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
+    stage('buoil') {
       steps {
-        sh 'sh "gcc jenkins.c -o jenkins"'
-      }
-    }
-    stage('Run') {
-      steps {
-        sh 'sh "./jenkins"'
+        echo 'ss'
       }
     }
   }
